@@ -164,7 +164,8 @@
         <tr height="5px"></tr>
         <tr>
         	<td colspan="2" align="center">
-        		<button class="btn" type="submit" onclick="return subCheck()">结果预览</button>
+        		<button class="btn" type="submit" onclick="return subCheck()">【Html发送】结果预览</button>
+        		<button class="btn" type="submit" onclick="return subTextCheck()">【纯文本发送】结果预览</button>
         	</td>
         </tr>
      </tbody>	
@@ -193,6 +194,29 @@
     		return false;
     	}else{
     		var contentStr = UM.getEditor('myEditor').getContent();
+    		$("#content").val(contentStr);
+    		return true;
+    	}   	
+    }
+    
+    function subTextCheck(){
+    	if($("#subject").val()==""){
+    		alert("邮件主题不能为空!");
+    		return false;
+    	}else if($("#emailInfoPath").val()==""){
+    		alert("请选择收件人邮箱附件名文件!");
+    		return false;
+    	}else if($("#attachmentPath").val()==""){
+    		alert("请输入附件查询目录!");
+    		return false;
+    	}else if($("#attachmentSuffix").val()==""){
+    		alert("请输入附件后缀!");
+    		return false;
+    	}else if(!UM.getEditor('myEditor').hasContents()){
+    		alert("邮件内容不能为空!");
+    		return false;
+    	}else{
+    		var contentStr = UM.getEditor('myEditor').getContentTxt();
     		$("#content").val(contentStr);
     		return true;
     	}
