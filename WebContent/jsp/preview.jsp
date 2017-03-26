@@ -52,7 +52,9 @@
   </table>
   <form action="send.do" method="post">
       <input type="hidden" name="subject" value="${subject}"/><br>
-      <input type="hidden" name="content" value="${content}"/><br>
+      <textarea rows="5" cols="15" style="display: none;" name="content">
+      	${content}
+      </textarea>
       <textarea rows="5" cols="15" style="display: none;" name="sendUserInfoStr">
       	${sendUserInfos}
       </textarea>
