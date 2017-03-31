@@ -151,14 +151,14 @@
         </tr>
         <tr>
            <td align="right">附件文件后缀:</td>
-           <td><input type="text" name="attachmentSuffix" id="attachmentSuffix" value="tar">&nbsp;&nbsp;<font color="red" size="2">示例：tar</font></td>
+           <td><input type="text" name="attachmentSuffix" id="attachmentSuffix">&nbsp;&nbsp;<font color="red" size="2">示例：tar</font></td>
         </tr>
         <tr height="5px"></tr>
         <tr>
            <td align="right">邮件内容:</td>
            <td>
                <script type="text/plain" id="myEditor" style="width:450px;height:150px;"></script>
-           	   <input type="hidden" name="content" id="content">
+           	   <input type="hidden" name="content" id="content"><font color="red">tips: #姓名# 会被替换为收件人姓名  #邮箱# 会被替换为收件人邮箱</font>
            </td>
         </tr>
         <tr height="5px"></tr>

@@ -63,24 +63,28 @@ public class MailSendAttachService {
 				 userContent = content.replaceAll("#姓名#",mailSendBean.getUserName());
 				 userContent = userContent.replaceAll("#邮箱#",mailSendBean.getEmail());
 				 try {
-					if(se.doSendHtmlEmail(subject, userContent, mailSendBean.getAttchFilePath(), mailSendBean.getEmail())){
-						 mailSendBean.setDealStatus(MailConstant.dealSuccess);
-					}else{
-						 mailSendBean.setDealStatus(MailConstant.dealFaild);
-						 mailSendBean.setErrorMsg("未找到附件!");
-					}
-				 } catch (AddressException e) {
+					    System.out.println(subject+"\t"+userContent+"\t"+mailSendBean.getEmail());
+						if(se.doSendHtmlEmail(subject, userContent, mailSendBean.getAttchFilePath(), mailSendBean.getEmail().trim())){
+							mailSendBean.setDealStatus(MailConstant.dealSuccess);
+						}else{
+							 mailSendBean.setDealStatus(MailConstant.dealFaild);
+							 mailSendBean.setErrorMsg("发送时异常,未找到指定文件!");
+						}						
+		
+				 } catch (IOException e5) {
 					 mailSendBean.setDealStatus(MailConstant.dealFaild);
-					 mailSendBean.setErrorMsg("发件人邮件发送信息配置错误!"+e.getStackTrace());
+					 mailSendBean.setErrorMsg("发送时异常,未找到指定文件!+"+e5.getMessage());
+					 e5.printStackTrace();
+				 }catch (AddressException e) {
+					 mailSendBean.setDealStatus(MailConstant.dealFaild);
+					 mailSendBean.setErrorMsg("发件人邮件发送信息配置错误!"+e.getMessage());
 				}catch (AuthenticationFailedException e2) {
 					 mailSendBean.setDealStatus(MailConstant.dealFaild);
-					 mailSendBean.setErrorMsg("发件人邮箱密码校验出错!"+e2.getStackTrace());
-				} catch (UnsupportedEncodingException e3) {
-					 mailSendBean.setDealStatus(MailConstant.dealFaild);
-					 mailSendBean.setErrorMsg("不支持编码!"+e3.getStackTrace());
+					 mailSendBean.setErrorMsg("发件人邮箱密码校验出错!"+e2.getMessage());
 				} catch (MessagingException e4) {
 					 mailSendBean.setDealStatus(MailConstant.dealFaild);
-					 mailSendBean.setErrorMsg("发送时异常,地址无效!+"+e4.getStackTrace());
+					 mailSendBean.setErrorMsg("发送时异常!+"+e4.getMessage());
+					 e4.printStackTrace();
 				}   
 			}
 		}

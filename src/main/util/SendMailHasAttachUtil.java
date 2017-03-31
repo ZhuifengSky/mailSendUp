@@ -6,12 +6,8 @@ import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.*;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -19,8 +15,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class SendMailHasAttachUtil {
@@ -69,9 +63,10 @@ public class SendMailHasAttachUtil {
      * @param receiveUser
      *            收件人地址
      * @throws UnsupportedEncodingException 
+     * @throws AddressException 
      * @throws MessagingException 
      */
-    public boolean doSendHtmlEmail(String subject, String sendHtml,String attachFilePath,String receiveEmail) throws UnsupportedEncodingException, MessagingException {
+    public boolean doSendHtmlEmail(String subject, String sendHtml,String attachFilePath,String receiveEmail) throws IOException, UnsupportedEncodingException, AddressException,MessagingException{
             // 发件人
             //InternetAddress from = new InternetAddress(sender_username);
             // 下面这个是设置发送人的Nick name
@@ -95,8 +90,9 @@ public class SendMailHasAttachUtil {
             MimeBodyPart mbp = new MimeBodyPart();
             mbp.setContent(content.toString(), "text/html;charset=gb2312");
             mp.addBodyPart(mbp);
-            if(!file.isEmpty()){//有附件
-                Enumeration efile=file.elements();
+            File checkfile = new File(attachFilePath);
+            if(checkfile.exists()){//有附件
+                Enumeration efile=file.elements();                
                 while(efile.hasMoreElements()){
                     mbp=new MimeBodyPart();
                     attachFilePath=efile.nextElement().toString(); //选择出每一个附件名
@@ -112,13 +108,13 @@ public class SendMailHasAttachUtil {
                 message.saveChanges();
                 transport = session.getTransport("smtp");
                 // smtp验证，就是你用来发邮件的邮箱用户名密码
-                transport.connect(mailHost,mailPort, sender_username, sender_password);
+                transport.connect(sender_username, sender_password);
                 // 发送
                 transport.sendMessage(message, message.getAllRecipients());
                 return true;
 	        }else{
-	            	return false;
-	        }         
+	            return false;
+	        } 
    }
 
 }
