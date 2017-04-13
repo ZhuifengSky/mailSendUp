@@ -13,6 +13,7 @@ public class MailAttachInfo {
 	private String attachmentSuffix;
 	private String content;
 	private String sendUserInfoStr;
+	private String findType;
 	
 	public String getSubject() {
 		return subject;
@@ -49,6 +50,12 @@ public class MailAttachInfo {
 	}
 	public void setSendUserInfoStr(String sendUserInfoStr) {
 		this.sendUserInfoStr = sendUserInfoStr;
+	}
+	public String getFindType() {
+		return findType;
+	}
+	public void setFindType(String findType) {
+		this.findType = findType;
 	}
 	
 	

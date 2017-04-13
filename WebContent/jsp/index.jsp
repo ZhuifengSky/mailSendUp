@@ -137,28 +137,40 @@
      <tbody>
         <tr>
            <td align="right">邮件主题:</td>
-           <td><input type="text" name="subject" id="subject"></td>
+           <td><input type="text" name="subject" id="subject" style="width: 200px; height: 20px"></td>
         </tr>
         <tr height="5px"></tr>
         <tr>
            <td align="right">收件人邮箱附件文件:</td>
-           <td><input type="file" name="file" id="emailInfoPath"></td>
+           <td><input type="file" name="file" id="emailInfoPath" style="width: 200px; height: 20px"></td>
+        </tr>
+        <tr height="8px"></tr>
+        <tr>
+           <td align="right">附件查询目录位置:</td>
+           <td><input type="text" name="attachmentPath" id="attachmentPath" style="width: 200px; height: 20px">&nbsp;&nbsp;<font color="red" size="2">示例：G:\mail\file 或/Users/sky/Documents/attachFile</font></td>
         </tr>
         <tr height="5px"></tr>
         <tr>
-           <td align="right">附件查询目录位置:</td>
-           <td><input type="text" name="attachmentPath" id="attachmentPath">&nbsp;&nbsp;<font color="red" size="2">示例：G:\mail\file 或/Users/sky/Documents/attachFile</font></td>
-        </tr>
-        <tr>
            <td align="right">附件文件后缀:</td>
-           <td><input type="text" name="attachmentSuffix" id="attachmentSuffix">&nbsp;&nbsp;<font color="red" size="2">示例：tar</font></td>
+           <td><input type="text" name="attachmentSuffix" id="attachmentSuffix" style="width: 200px; height: 20px">&nbsp;&nbsp;<font color="red" size="2">示例：tar</font></td>
+        </tr>
+        <tr height="5px"></tr>
+        <tr>
+           <td align="right">匹配方式:</td>
+           <td>
+              <select name="findType" id="findType" style="width: 200px; height: 30px">
+                 <option value="">请选择</option>
+           		 <option value="sigle">单一匹配</option>
+           		 <option value="near">模糊匹配</option>
+              </select>&nbsp;&nbsp;<font color="red" size="2">模糊匹配----附件名(1).附件名(2)....</font>
+           </td>
         </tr>
         <tr height="5px"></tr>
         <tr>
            <td align="right">邮件内容:</td>
            <td>
-               <script type="text/plain" id="myEditor" style="width:450px;height:150px;"></script>
-           	   <input type="hidden" name="content" id="content"><font color="red">tips: #姓名# 会被替换为收件人姓名  #邮箱# 会被替换为收件人邮箱</font>
+               <script type="text/plain" id="myEditor" style="width:550px;height:250px;"></script>
+           	   <input type="hidden" name="content" id="content"><font color="red">tips: 【姓名】 会被替换为收件人姓名  【邮箱】 会被替换为收件人邮箱</font>
            </td>
         </tr>
         <tr height="5px"></tr>
@@ -187,6 +199,9 @@
     		return false;
     	}else if($("#attachmentSuffix").val()==""){
     		alert("请输入附件后缀!");
+    		return false;
+    	}else if($("#findType").val()==""){
+    		alert("请选择匹配方式!");
     		return false;
     	}else if(!UM.getEditor('myEditor').hasContents()){
     		alert("邮件内容不能为空!");

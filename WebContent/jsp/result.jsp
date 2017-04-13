@@ -47,14 +47,23 @@
         	   <td align="center" height="30px">${s.userName}</td>
         	   <td align="center">${s.attachFileName}</td>
         	   <td align="center">${s.email}</td>
-        	   <td align="center">${s.attchFilePath}</td>
+        	   <td align="center">
+        	   		 <c:if test="${findType eq 'sigle'}">
+        	   		      ${s.attchFilePath}
+        	         </c:if>
+        	         <c:if test="${findType eq 'near'}">
+        	   		    <c:forEach items="${s.attchFilePathes}" var="p">
+        	   		         ${p};&nbsp;&nbsp;&nbsp;
+        	   		    </c:forEach>
+        	         </c:if>       	   
+        	   </td>
         	   <td align="center"><font color="green">${s.dealStatus}</font></td>
             </tr>
         </c:forEach>
      </tbody>	
   </table>
   <hr>
-  <h4>成功记录</h4>
+  <h4>失败记录</h4>
   <table border="1px">
      <tbody>
         <tr>
@@ -70,7 +79,16 @@
         	   <td align="center" height="30px">${s.userName}</td>
         	   <td align="center">${s.attachFileName}</td>
         	   <td align="center">${s.email}</td>
-        	   <td align="center">${s.attchFilePath}</td>
+        	   <td align="center">
+        	   		<c:if test="${findType eq 'sigle'}">
+        	   		      ${s.attchFilePath}
+        	         </c:if>
+        	         <c:if test="${findType eq 'near'}">
+        	   		    <c:forEach items="${s.attchFilePathes}" var="p">
+        	   		         ${p};&nbsp;&nbsp;&nbsp;
+        	   		    </c:forEach>
+        	         </c:if>       	          	   
+        	   </td>
         	   <td align="center"><font color="red">${s.dealStatus}</font></td>
         	   <td align="center"><font color="red">${s.errorMsg}</font></td>
             </tr>

@@ -39,18 +39,34 @@
            <th width="100px">附件名</th>
            <th width="200px">邮箱</th>
            <th width="300px">附件查询路径</th>
+           <c:if test="${findType eq 'near'}">
+              <th width="300px">提示信息</th>
+           </c:if>
         </tr>
         <c:forEach items="${sendBeans}" var="s">
         	 <tr>
         	   <td align="center" height="30px">${s.userName}</td>
         	   <td align="center">${s.attachFileName}</td>
         	   <td align="center">${s.email}</td>
-        	   <td align="center">${s.attchFilePath}</td>
+        	   <td align="center">
+        	       <c:if test="${findType eq 'sigle'}">
+        	   		${s.attchFilePath}
+        	       </c:if>
+        	       <c:if test="${findType eq 'near'}">
+        	   		    <c:forEach items="${s.attchFilePathes}" var="p">
+        	   		         ${p};&nbsp;&nbsp;&nbsp;
+        	   		    </c:forEach>
+        	       </c:if>
+        	   </td>
+        	   <c:if test="${findType eq 'near'}">
+              		<th width="300px"><font color="red">${s.errorMsg}</font></th>
+               </c:if>
             </tr>
         </c:forEach>
      </tbody>	
   </table>
   <form action="send.do" method="post">
+      <input type="hidden" name="findType" value="${findType}"/><br>
       <input type="hidden" name="subject" value="${subject}"/><br>
       <textarea rows="5" cols="15" style="display: none;" name="content">
       	${content}

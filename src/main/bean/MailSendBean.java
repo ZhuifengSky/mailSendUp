@@ -1,5 +1,7 @@
 package main.bean;
 
+import java.util.List;
+
 /**
  * ÎÄ¼þ·¢ËÍBean
  * @author pc-zw
@@ -13,6 +15,7 @@ public class MailSendBean {
 	private String attchFilePath;
 	private String dealStatus;
 	private String errorMsg;
+	private List<String> attchFilePathes;
 	
 	public String getUserName() {
 		return userName;
@@ -50,6 +53,11 @@ public class MailSendBean {
 	public void setErrorMsg(String errorMsg) {
 		this.errorMsg = errorMsg;
 	}
-	
+	public List<String> getAttchFilePathes() {
+		return attchFilePathes;
+	}
+	public void setAttchFilePathes(List<String> attchFilePathes) {
+		this.attchFilePathes = attchFilePathes;
+	}
 	
 }

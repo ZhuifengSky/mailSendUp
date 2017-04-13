@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import main.bean.FileFindResultBean;
 import main.bean.MailSendBean;
 import main.contant.MailConstant;
 
@@ -42,7 +43,7 @@ public class ReadExcelXSSFUtil {
 	private static int columnNum = 0;
 
 	//进行Excel文件读取
-	public static List<MailSendBean> getSendInfoList(InputStream is,String attchFilePath,String attachmentSuffix) throws EncryptedDocumentException, InvalidFormatException {				
+	public static List<MailSendBean> getSendInfoList(InputStream is,String findType,String attchFilePath,String attachmentSuffix) throws EncryptedDocumentException, InvalidFormatException {				
 		try {
 			//得到工作簿对象
 			Workbook workbook = WorkbookFactory.create(is);
@@ -59,7 +60,7 @@ public class ReadExcelXSSFUtil {
 			readColumns.put(MailConstant.attachFileName, 1);
 			readColumns.put(MailConstant.email, 2);				
 			//指定日期格式以及开始读取的行数
-			return readSetColumn(sheet, 1, 1, rowsNum, columnNum, readColumns,attchFilePath,attachmentSuffix);
+			return readSetColumn(sheet, 1, 1, rowsNum, columnNum, readColumns,findType,attchFilePath,attachmentSuffix);
 		} catch (IOException e) {
 			log.error("read Excel Throws Exception!");
 			e.printStackTrace();
@@ -161,7 +162,7 @@ public class ReadExcelXSSFUtil {
 	 */
 	private static List<MailSendBean> readSetColumn(Sheet sheet,
 			int startRow, int startColumn, int totalRows, int columnNum,
-			Map<String, Integer> readColumns,String attachFilePath,String attachmentSuffix) {
+			Map<String, Integer> readColumns,String findType,String attachFilePath,String attachmentSuffix) {
 		List<MailSendBean> mailSendBeans = new ArrayList<MailSendBean>();
 		try {
 			// 是否继续解析标记
@@ -193,7 +194,16 @@ public class ReadExcelXSSFUtil {
 						mailSendBean.setUserName(cellValue.trim());
 					} else if (columnsName.equals(MailConstant.attachFileName)) {
 						mailSendBean.setAttachFileName(cellValue.trim());
-						mailSendBean.setAttchFilePath(attachFilePath+File.separatorChar+cellValue.trim()+"."+attachmentSuffix);
+						if (findType.equals("sigle")) {
+							mailSendBean.setAttchFilePath(attachFilePath+File.separatorChar+cellValue.trim()+"."+attachmentSuffix);
+						}else{
+							FileFindResultBean resultBean = FindFileUtil.findTargetFilePath(attachFilePath, cellValue.trim(), attachmentSuffix);
+							if (resultBean.getCode().equals("200")) {
+								mailSendBean.setAttchFilePathes(resultBean.getAttchPathes());
+							}else{
+								mailSendBean.setErrorMsg(resultBean.getInfo());
+							}							
+						}						
 					} else if (columnsName.equals(MailConstant.email)) {						
 						mailSendBean.setEmail(cellValue.trim());
 					}

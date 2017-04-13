@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -117,4 +118,68 @@ public class SendMailHasAttachUtil {
 	        } 
    }
 
+    /**
+     * 发送邮件
+     *@param 发件人昵称
+     * @param subject
+     *            邮件主题
+     * @param sendHtml
+     *            邮件内容
+     * @param receiveUser
+     *            收件人地址
+     * @throws UnsupportedEncodingException 
+     * @throws AddressException 
+     * @throws MessagingException 
+     */
+    public boolean doSendHtmlManyAttachEmail(String subject, String sendHtml,List<String> attachFilePathes,String receiveEmail) throws IOException, UnsupportedEncodingException, AddressException,MessagingException{
+            // 发件人
+            //InternetAddress from = new InternetAddress(sender_username);
+            // 下面这个是设置发送人的Nick name
+            InternetAddress from= new InternetAddress(MimeUtility.encodeWord(nickName)+" <"+sender_username+">");
+            message.setFrom(from);
+            // 收件人
+            InternetAddress to = new InternetAddress(receiveEmail);
+            message.setRecipient(Message.RecipientType.TO, to);//还可以有CC、BCC
+            // 抄送人
+            //message.setRecipient(Message.RecipientType.CC, new InternetAddress("13752381963@163.com"));
+            // 暗送人
+            //message.setRecipient(Message.RecipientType.BCC, new InternetAddress("zhangwu@yy.com"));
+            // 邮件主题
+            message.setSubject(subject);
+            String content = sendHtml.toString();
+            // 邮件内容,也可以使纯文本"text/plain"
+            message.setContent(content, "text/html;charset=UTF-8");
+            file = new Vector();
+            if (attachFilePathes!=null && attachFilePathes.size()>0) {
+            	for (String attachFilePath : attachFilePathes) {
+            		file.addElement(attachFilePath);
+				}
+	        	 Multipart mp = new MimeMultipart();
+	             MimeBodyPart mbp = new MimeBodyPart();
+	             mbp.setContent(content.toString(), "text/html;charset=gb2312");
+	             mp.addBodyPart(mbp);            
+                 Enumeration efile=file.elements();                
+                 while(efile.hasMoreElements()){
+                         mbp=new MimeBodyPart();
+                         String attachFilePath=efile.nextElement().toString(); //选择出每一个附件名
+                         FileDataSource fds=new FileDataSource(attachFilePath); //得到数据源
+                         mbp.setDataHandler(new DataHandler(fds)); //得到附件本身并至入BodyPart
+                         mbp.setFileName(fds.getName());  //得到文件名同样至入BodyPart
+                         mp.addBodyPart(mbp);
+                 }
+                     file.removeAllElements();
+                     message.setContent(mp); //Multipart加入到信件
+                     message.setSentDate(new Date());     //设置信件头的发送日期
+                     // 保存邮件
+                     message.saveChanges();
+                     transport = session.getTransport("smtp");
+                     // smtp验证，就是你用来发邮件的邮箱用户名密码
+                     transport.connect(sender_username, sender_password);
+                     // 发送
+                     transport.sendMessage(message, message.getAllRecipients());
+                     return true;
+			}else{
+				return false;
+			}          
+   }
 }

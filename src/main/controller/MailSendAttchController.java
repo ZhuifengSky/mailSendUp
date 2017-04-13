@@ -41,11 +41,12 @@ public class MailSendAttchController {
 	public String previewResult(@RequestParam MultipartFile file, MailAttachInfo  mailAttachInfo,HttpServletRequest request, HttpServletResponse response,
 			Model model){
 		try {
-			List<MailSendBean> sendBeans = mailService.getSendBeans(file, mailAttachInfo.getAttachmentPath(),mailAttachInfo.getAttachmentSuffix());
+			List<MailSendBean> sendBeans = mailService.getSendBeans(file,mailAttachInfo.getFindType(), mailAttachInfo.getAttachmentPath(),mailAttachInfo.getAttachmentSuffix());
 			Gson gson = new Gson();
 			String sendUserInfos = gson.toJson(sendBeans);
 			model.addAttribute("sendBeans", sendBeans);
 			model.addAttribute("subject", mailAttachInfo.getSubject());
+			model.addAttribute("findType", mailAttachInfo.getFindType());
 			model.addAttribute("content", mailAttachInfo.getContent());
 			model.addAttribute("sendUserInfos", sendUserInfos);
 		} catch (EncryptedDocumentException | FileNotFoundException
@@ -65,7 +66,7 @@ public class MailSendAttchController {
 		Type listType = new TypeToken<List<MailSendBean>>(){}.getType();
 		List<MailSendBean> sendBeans = gson.fromJson(mailAttachInfo.getSendUserInfoStr().trim(), listType);
 		if (sendBeans!=null && sendBeans.size()>0) {
-			List<MailSendBean> resultBeans = mailService.sendMail(mailAttachInfo.getSubject(), mailAttachInfo.getContent(), sendBeans);
+			List<MailSendBean> resultBeans = mailService.sendMail(mailAttachInfo.getSubject(), mailAttachInfo.getContent(),mailAttachInfo.getFindType(), sendBeans);
 			if (resultBeans!=null && resultBeans.size()>0) {
 				List<MailSendBean> successBeans = new ArrayList<MailSendBean>();
 				List<MailSendBean> errorBeans = new ArrayList<MailSendBean>();
@@ -79,6 +80,7 @@ public class MailSendAttchController {
 				}
 				model.addAttribute("successBeans", successBeans);
 				model.addAttribute("errorBeans", errorBeans);
+				model.addAttribute("findType", mailAttachInfo.getFindType());
 			}			
 			return "/jsp/result.jsp";	
 		}else{

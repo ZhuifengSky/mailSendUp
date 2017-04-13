@@ -32,11 +32,11 @@ public class MailSendAttachService {
 	 * @throws InvalidFormatException 
 	 * @throws EncryptedDocumentException 
 	 */
-	public List<MailSendBean> getSendBeans(MultipartFile file,String attachFilePath,String attachmentSuffix) throws FileNotFoundException, EncryptedDocumentException, InvalidFormatException{
+	public List<MailSendBean> getSendBeans(MultipartFile file,String findType,String attachFilePath,String attachmentSuffix) throws FileNotFoundException, EncryptedDocumentException, InvalidFormatException{
 		InputStream is;
 		try {
 			is = file.getInputStream();
-			List<MailSendBean> sendBeans = ReadExcelXSSFUtil.getSendInfoList(is, attachFilePath,attachmentSuffix);
+			List<MailSendBean> sendBeans = ReadExcelXSSFUtil.getSendInfoList(is,findType, attachFilePath,attachmentSuffix);
 			return sendBeans;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -55,22 +55,30 @@ public class MailSendAttachService {
 	 * @param sendBeans
 	 * @return
 	 */
-	public List<MailSendBean> sendMail(String subject,String content,List<MailSendBean> sendBeans){
+	public List<MailSendBean> sendMail(String subject,String content,String findType,List<MailSendBean> sendBeans){
 		SendMailHasAttachUtil se = new SendMailHasAttachUtil(false);  			 
 		if (sendBeans!=null && sendBeans.size()>0) {
 			for (MailSendBean mailSendBean : sendBeans) {
 				 String userContent = content;
-				 userContent = content.replaceAll("#姓名#",mailSendBean.getUserName());
-				 userContent = userContent.replaceAll("#邮箱#",mailSendBean.getEmail());
+				 userContent = content.replaceAll("【姓名】",mailSendBean.getUserName());
+				 userContent = userContent.replaceAll("【邮箱】",mailSendBean.getEmail());
 				 try {
-					    System.out.println(subject+"\t"+userContent+"\t"+mailSendBean.getEmail());
-						if(se.doSendHtmlEmail(subject, userContent, mailSendBean.getAttchFilePath(), mailSendBean.getEmail().trim())){
+					 if (findType.equals("sigle")) {
+						 if(se.doSendHtmlEmail(subject, userContent, mailSendBean.getAttchFilePath(), mailSendBean.getEmail().trim())){
+								mailSendBean.setDealStatus(MailConstant.dealSuccess);
+						 }else{
+								 mailSendBean.setDealStatus(MailConstant.dealFaild);
+								 mailSendBean.setErrorMsg("发送时异常,未找到指定文件!");
+						 }	
+					}else{
+						if(se.doSendHtmlManyAttachEmail(subject, userContent, mailSendBean.getAttchFilePathes(), mailSendBean.getEmail().trim())){
 							mailSendBean.setDealStatus(MailConstant.dealSuccess);
-						}else{
+					    }else{
 							 mailSendBean.setDealStatus(MailConstant.dealFaild);
-							 mailSendBean.setErrorMsg("发送时异常,未找到指定文件!");
-						}						
-		
+							 mailSendBean.setErrorMsg("未找到能匹配文件!");
+					    }	
+					}
+					  						
 				 } catch (IOException e5) {
 					 mailSendBean.setDealStatus(MailConstant.dealFaild);
 					 mailSendBean.setErrorMsg("发送时异常,未找到指定文件!+"+e5.getMessage());
