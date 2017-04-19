@@ -112,6 +112,7 @@ public class SendMailHasAttachUtil {
                 transport.connect(sender_username, sender_password);
                 // ·¢ËÍ
                 transport.sendMessage(message, message.getAllRecipients());
+                transport.close();
                 return true;
 	        }else{
 	            return false;
@@ -177,6 +178,7 @@ public class SendMailHasAttachUtil {
                      transport.connect(sender_username, sender_password);
                      // ·¢ËÍ
                      transport.sendMessage(message, message.getAllRecipients());
+                     transport.close();
                      return true;
 			}else{
 				return false;

@@ -206,9 +206,9 @@ etpl.config({
 
         //fontfamily
         //字体设置
-        ,'fontfamily':[
-              { name: 'songti', val: '宋体,SimSun'},
-         ]
+        //,'fontfamily':[
+        //      { name: 'songti', val: '宋体,SimSun'},
+        // ]
 
         //fontsize
         //字号

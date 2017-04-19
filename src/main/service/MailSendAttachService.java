@@ -58,6 +58,7 @@ public class MailSendAttachService {
 	public List<MailSendBean> sendMail(String subject,String content,String findType,List<MailSendBean> sendBeans){
 		SendMailHasAttachUtil se = new SendMailHasAttachUtil(false);  			 
 		if (sendBeans!=null && sendBeans.size()>0) {
+			 int count = 0;
 			for (MailSendBean mailSendBean : sendBeans) {
 				 String userContent = content;
 				 userContent = content.replaceAll("【姓名】",mailSendBean.getUserName());
@@ -78,7 +79,13 @@ public class MailSendAttachService {
 							 mailSendBean.setErrorMsg("未找到能匹配文件!");
 					    }	
 					}
-					  						
+					count++;
+					if (count>=100) {
+						Thread.sleep(10000);
+						count=0;
+					}else{
+						continue;
+					} 
 				 } catch (IOException e5) {
 					 mailSendBean.setDealStatus(MailConstant.dealFaild);
 					 mailSendBean.setErrorMsg("发送时异常,未找到指定文件!+"+e5.getMessage());
@@ -93,6 +100,9 @@ public class MailSendAttachService {
 					 mailSendBean.setDealStatus(MailConstant.dealFaild);
 					 mailSendBean.setErrorMsg("发送时异常!+"+e4.getMessage());
 					 e4.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}   
 			}
 		}
